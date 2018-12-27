@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zuoye.mapper.UserMapper">
+    <resultMap id="UserMap" type="User">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="telephone" property="telephone"/>
+        <result column="password" property="password"/>
+        <collection property="roles" ofType="Role" >
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+
+
+    <!--用户登录 -->
+    <select id="getAuthority" parameterType="Integer" resultType="String">
+        SELECT
+            authority.authority_name
+        FROM
+            `user`
+                INNER JOIN user_role
+                INNER JOIN role
+                INNER JOIN role_authority
+                INNER JOIN authority
+        WHERE
+            `user`.user_id = user_role.user_id AND
+            user_role.role_id = role.role_id AND
+            role.role_id = role_authority.role_id AND
+            role_authority.role_authority_id = authority.authority_id AND
+            `user`.user_id=#{userId}
+
+    </select>
+
+    <select id="login" parameterType="java.util.Map"
+            resultType="User">
+        select *
+        from user
+        where telephone = #{telephone}
+          and password = #{password}
+    </select>
+    <select id="userDetail" parameterType="Integer" resultType="User">
+        select * from user where user_id=#{userId}
+    </select>
+    <select id="idenRole" parameterType="Integer" resultType="Integer">
+        select role_id
+        from user_role
+        where user_id = #{userId}
+    </select>
+    <select id="queryRoles"  resultMap="UserMap">
+        SELECT
+            `user`.user_id,
+            `user`.user_name,
+            `user`.telephone,
+            `user`.`password`,
+            role.role_id,
+            role.role_name
+        FROM
+            `user`,
+            role,
+            user_role
+        WHERE
+            `user`.user_id = user_role.user_id
+          AND
+            user_role.role_id = role.role_id
+    </select>
+
+
+    <insert id="addUser" parameterType="User">
+
+        insert into user(telephone, password, user_name)
+        values (#{telephone}, #{password}, #{userName})
+
+    </insert>
+
+</mapper>

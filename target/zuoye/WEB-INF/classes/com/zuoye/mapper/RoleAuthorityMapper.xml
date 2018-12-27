@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zuoye.mapper.RoleAuthorityMapper">
+    <resultMap id="RoleAuthorityMap" type="RoleAuthority">
+        <id column="role_authority_id" property="roleAuthorityId"/>
+        <result column="authority_id" property="authorityId"/>
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+    <update id="updateAuthority" parameterType="RoleAuthority">
+        update role_authority set authority_id=#{authorityId} where role_id=#{roleId}
+    </update>
+</mapper>
